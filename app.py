@@ -1,26 +1,15 @@
 import streamlit as st
-from transformers import pipeline
+from qa_model import answer_question
 
-st.set_page_config(page_title="Question Answering System", layout="wide")
+st.set_page_config(page_title="User Question Answering", layout="centered")
 
-# Load transformer pipeline
-qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
+st.title("📘 User Question Answering System")
+st.write("Ask a question based on the given context.")
 
-st.title("📄 Upload Document + ❓ Ask Questions")
+context = st.text_area("📄 Enter context passage:", height=250, placeholder="Paste your context here...")
+question = st.text_input("❓ Enter your question:", placeholder="Type your question here...")
 
-uploaded_file = st.file_uploader("Upload a .txt file", type=["txt"])
-
-context = ""
-if uploaded_file:
-    context = uploaded_file.read().decode("utf-8")
-    st.success("Document uploaded successfully!")
-
-if context:
-    question = st.text_input("Enter your question:")
-    if question:
-        result = qa_pipeline({"context": context, "question": question})
-        st.subheader("📌 Answer")
-        st.markdown(f"**{result['answer']}**")
-        st.caption(f"Confidence: {result['score']:.4f}")
-else:
-    st.info("Please upload a text file to begin.")
+if st.button("Get Answer"):
+    with st.spinner("Generating answer..."):
+        answer = answer_question(context, question)
+        st.success(f"🧠 Answer: {answer}")
