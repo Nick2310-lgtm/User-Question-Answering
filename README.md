@@ -1,20 +1,16 @@
-# User Question Answering System (Internship Project)
+# 🧠 User Question Answering System(Intership Project)
 
-This is a lightweight, Python-based Question Answering System using Streamlit and Hugging Face Transformers. It allows users to upload `.txt` documents and ask natural-language questions.
+This project uses a transformer-based machine learning model to answer questions based on a user-provided passage or document.
 
-## 🎯 Features
-- Upload `.txt` files as context
-- Ask any question from the document
-- Get AI-powered, high-accuracy answers
-- 100% Python — no frontend or backend needed
+## 🚀 Features
 
-## 🚀 Getting Started
+- Uses HuggingFace Transformers
+- Based on DistilBERT fine-tuned on SQuAD
+- Lightweight and accurate
+- Built with Streamlit for a fast UI
 
-### Prerequisites
-- Python 3.8+
-- pip
+## 🛠 How to Run
 
-### Installation
 ```bash
 pip install -r requirements.txt
-streamlit run qa_app.py
+streamlit run app.py
