@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QA System</title>
+</head>
+<body>
+    <h1>Upload Document</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <h1>Ask a Question</h1>
+    <form id="askForm">
+        <input type="text" name="question" required>
+        <input type="text" name="file" placeholder="Enter file name used" required>
+        <button type="submit">Ask</button>
+    </form>
+
+    <h3 id="response"></h3>
+
+    <script>
+        document.getElementById("uploadForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            await fetch("/upload", { method: "POST", body: formData });
+            alert("File uploaded!");
+        };
+
+        document.getElementById("askForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch("/ask", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById("response").innerText = `Answer: ${data.answer} (Source: ${data.source})`;
+        };
+    </script>
+</body>
+</html>
