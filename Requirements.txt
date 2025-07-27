@@ -1,5 +1,5 @@
-Flask==2.0.1
-transformers==4.11.3
-torch==1.9.1
-scikit-learn==1.0
-mysql-connector-python==8.0.26
+streamlit
+transformers
+torch
+
+pip install -r requirements.txt
