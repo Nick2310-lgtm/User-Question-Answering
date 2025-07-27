@@ -1,4 +1,4 @@
-# Question Answering System (Internship Project)
+# User Question Answering System (Internship Project)
 
 This is a lightweight, Python-based Question Answering System using Streamlit and Hugging Face Transformers. It allows users to upload `.txt` documents and ask natural-language questions.
 
