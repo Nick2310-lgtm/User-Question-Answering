@@ -1,9 +1,0 @@
-CREATE DATABASE qasystem;
-
-USE qasystem;
-
-CREATE TABLE qa (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    question TEXT,
-    answer TEXT
-);
