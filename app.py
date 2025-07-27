@@ -1,58 +1,26 @@
-from flask import Flask, render_template, request, jsonify
+import streamlit as st
 from transformers import pipeline
-import mysql.connector
-from similarity import find_most_similar
-import os
 
-app = Flask(__name__)
+st.set_page_config(page_title="Question Answering System", layout="wide")
 
+# Load transformer pipeline
 qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="qasystem"
-)
-cursor = db.cursor()
+st.title("📄 Upload Document + ❓ Ask Questions")
 
-UPLOAD_FOLDER = 'uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+uploaded_file = st.file_uploader("Upload a .txt file", type=["txt"])
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+context = ""
+if uploaded_file:
+    context = uploaded_file.read().decode("utf-8")
+    st.success("Document uploaded successfully!")
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = request.files['file']
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(filepath)
-    return "File uploaded successfully"
-
-@app.route('/ask', methods=['POST'])
-def ask():
-    question = request.form['question']
-    file_path = request.form['file']
-
-    filepath = os.path.join(UPLOAD_FOLDER, file_path)
-    with open(filepath, 'r', encoding='utf-8') as f:
-        context = f.read()
-
-    cursor.execute("SELECT question, answer FROM qa")
-    data = cursor.fetchall()
-
-    similar_question, answer = find_most_similar(question, data)
-    if similar_question:
-        return jsonify({"answer": answer, "source": "database"})
-
-    result = qa_pipeline({'context': context, 'question': question})
-    answer = result['answer']
-    cursor.execute("INSERT INTO qa (question, answer) VALUES (%s, %s)", (question, answer))
-    db.commit()
-
-    return jsonify({"answer": answer, "source": "model"})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if context:
+    question = st.text_input("Enter your question:")
+    if question:
+        result = qa_pipeline({"context": context, "question": question})
+        st.subheader("📌 Answer")
+        st.markdown(f"**{result['answer']}**")
+        st.caption(f"Confidence: {result['score']:.4f}")
+else:
+    st.info("Please upload a text file to begin.")
